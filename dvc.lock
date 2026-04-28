@@ -1,0 +1,124 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/data_ingestion.py
+    deps:
+    - path: data/raw/dataset_phishing.csv
+      hash: md5
+      md5: ed9850d990e6aa169afcd23497397fcd
+      size: 3661166
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: a4e73976cae68e80bb686d6df5230f1a
+      size: 1515
+  data_validation:
+    cmd: python src/data_validation.py
+    deps:
+    - path: data/raw/dataset_phishing.csv
+      hash: md5
+      md5: ed9850d990e6aa169afcd23497397fcd
+      size: 3661166
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: a4e73976cae68e80bb686d6df5230f1a
+      size: 1515
+    - path: src/data_validation.py
+      hash: md5
+      md5: 59295c181b2ac02703e6413962cf64e7
+      size: 3139
+    outs:
+    - path: reports/validation
+      hash: md5
+      md5: 42a2e1316a898edef77c1a03ff2b8d20.dir
+      size: 134
+      nfiles: 1
+  data_preprocessing:
+    cmd: python src/data_preprocess.py
+    deps:
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: a4e73976cae68e80bb686d6df5230f1a
+      size: 1515
+    - path: src/data_preprocess.py
+      hash: md5
+      md5: 51f4642d57a8e675235ce1e5356a9670
+      size: 1283
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 878d9251fbc8ec443a22c32140676fed.dir
+      size: 3671172
+      nfiles: 4
+  preprocess:
+    cmd: python src/data_preprocess.py
+    deps:
+    - path: data/raw/dataset_phishing.csv
+      hash: md5
+      md5: ed9850d990e6aa169afcd23497397fcd
+      size: 3661166
+    - path: src/data_ingestion.py
+      hash: md5
+      md5: a4e73976cae68e80bb686d6df5230f1a
+      size: 1515
+    - path: src/data_preprocess.py
+      hash: md5
+      md5: 66a9a709a369378cc289c3e42c63582f
+      size: 4085
+    outs:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: bf5fdf8c794e0f2b4c5999afe8c77106
+      size: 568582
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: abc833199eaf8ed4ad6864a0b0d853c8
+      size: 2266618
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 31f1962043fdccc08573ed8e74cf1446
+      size: 6866
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 57433473b7adaf9bae44a48811318889
+      size: 27440
+  train:
+    cmd: python src/data_train.py
+    deps:
+    - path: data/processed/X_test.csv
+      hash: md5
+      md5: bf5fdf8c794e0f2b4c5999afe8c77106
+      size: 568582
+    - path: data/processed/X_train.csv
+      hash: md5
+      md5: abc833199eaf8ed4ad6864a0b0d853c8
+      size: 2266618
+    - path: data/processed/y_test.csv
+      hash: md5
+      md5: 31f1962043fdccc08573ed8e74cf1446
+      size: 6866
+    - path: data/processed/y_train.csv
+      hash: md5
+      md5: 57433473b7adaf9bae44a48811318889
+      size: 27440
+    - path: src/data_preprocess.py
+      hash: md5
+      md5: 66a9a709a369378cc289c3e42c63582f
+      size: 4085
+    - path: src/data_train.py
+      hash: md5
+      md5: 6e2aa839b86ff58b20da0db4c3980054
+      size: 6518
+    outs:
+    - path: config/best_model.json
+      hash: md5
+      md5: e4b842ef1e474cbe875b8c341c5d0f7f
+      size: 189
+    - path: models/best_model.pkl
+      hash: md5
+      md5: 418681b37864d2a90e9939aa97bca895
+      size: 4040937
+    - path: reports/model_eval
+      hash: md5
+      md5: f80fa1b96a9ba84a986ee86dc0953c5d.dir
+      size: 1204
+      nfiles: 3
