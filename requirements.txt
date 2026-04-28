@@ -1,0 +1,12 @@
+pandas
+numpy
+scikit-learn
+pymongo
+dnspython
+python-dotenv
+mlflow
+dvc
+evidently
+fastapi
+uvicorn
+joblib
