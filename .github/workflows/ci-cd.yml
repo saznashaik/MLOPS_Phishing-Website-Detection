@@ -44,11 +44,11 @@ jobs:
 
       # Step 7: Run preprocessing
       - name: Run preprocessing
-        run: python src/preprocess.py
+        run: python src/data_preprocess.py
 
       # Step 8: Run model training
       - name: Train model
-        run: python src/train.py
+        run: python src/data_train.py
 
       # Step 9: Test the API starts correctly
       - name: Test API startup
