@@ -1,0 +1,23 @@
+artifact_path: file:C:/Users/SaznaShaik/Documents/MLOPS/MLOPS_Phishing-Website-Detection/mlruns/1/models/m-ceb5d19feae4467892438f83223b2899/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.5
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.11.1
+model_id: m-ceb5d19feae4467892438f83223b2899
+model_size_bytes: 4031927
+model_uuid: m-ceb5d19feae4467892438f83223b2899
+prompts: null
+run_id: 9b6db9a06867482188387e9b4d840479
+utc_time_created: '2026-04-28 12:57:30.595032'

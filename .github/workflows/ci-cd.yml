@@ -1,0 +1,66 @@
+name: MLOps CI/CD Pipeline
+
+# This pipeline runs every time you push code to the main branch
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest   # GitHub gives us a free Linux computer
+
+    steps:
+      # Step 1: Download your code onto the GitHub computer
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Install Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # Step 3: Install all dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Create .env file from GitHub Secrets
+      # (You will add MONGO_URI as a secret in GitHub settings)
+      - name: Create .env file
+        run: |
+          echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
+
+      # Step 5: Run data ingestion
+      - name: Run data ingestion
+        run: python src/data_ingestion.py
+
+      # Step 6: Run data validation
+      - name: Run data validation
+        run: python src/data_validation.py
+
+      # Step 7: Run preprocessing
+      - name: Run preprocessing
+        run: python src/preprocess.py
+
+      # Step 8: Run model training
+      - name: Train model
+        run: python src/train.py
+
+      # Step 9: Test the API starts correctly
+      - name: Test API startup
+        run: |
+          uvicorn app:app --host 0.0.0.0 --port 8000 &
+          sleep 5
+          curl -f http://localhost:8000/health || exit 1
+          echo "✅ API is healthy!"
+
+      # Step 10: Build Docker image
+      - name: Build Docker image
+        run: docker build -t phishing-detection:latest .
+
+      - name: Print success message
+        run: echo "🎉 Pipeline completed successfully!"

@@ -1,0 +1,11 @@
+Model: Gradient Boosting
+Trained at: 2026-04-28 18:35:41.877542
+
+              precision    recall  f1-score   support
+
+           0       0.96      0.95      0.95      1143
+           1       0.95      0.96      0.95      1143
+
+    accuracy                           0.95      2286
+   macro avg       0.95      0.95      0.95      2286
+weighted avg       0.95      0.95      0.95      2286
