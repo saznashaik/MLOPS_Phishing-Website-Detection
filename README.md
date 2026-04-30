@@ -163,15 +163,6 @@ Every tool was chosen deliberately. Here is what each one is, why we chose it, a
 - `dvc repro` runs the full pipeline in the correct order, skipping cached stages  
 - If you change only the training script, DVC knows to re-run only the training stage, not re-download and re-preprocess all the data
 
----
-
-### 📊 Evidently AI
-**What it is:** An open-source library for monitoring and validating ML data.  
-**Why we use it:** Before training, we need to verify that our data is actually good. Evidently generates beautiful HTML reports that show data quality metrics, missing values, column distributions, and data drift (whether new data looks different from training data). These reports are exactly what ML teams present in review meetings.  
-**How we use it:**  
-- `src/data_validation.py` uses Evidently's `DataQualityPreset` and `DataDriftPreset`  
-- Reports are saved as HTML files in `reports/validation/`  
-- The pipeline only continues to preprocessing if validation passes
 
 ---
 
