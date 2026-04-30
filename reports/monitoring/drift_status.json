@@ -1,0 +1,7 @@
+{
+    "timestamp": "20260429_173600",
+    "drift_detected": false,
+    "share_drifted_features": 0.0,
+    "drift_threshold": 0.3,
+    "retrain_triggered": false
+}

@@ -1,0 +1,143 @@
+name: Nightly Model Monitoring and Auto-Retrain
+
+on:
+  # Runs every day at 2 AM UTC automatically
+  schedule:
+    - cron: "0 2 * * *"
+
+  # Manual trigger from GitHub UI — useful for testing
+  workflow_dispatch:
+    inputs:
+      force_retrain:
+        description: "Force retraining even if no drift (true/false)"
+        required: false
+        default: "false"
+
+jobs:
+
+  # ============================================================
+  # JOB 1: Run drift detection monitoring
+  # ============================================================
+  monitor:
+    name: Drift Detection
+    runs-on: ubuntu-latest
+
+    outputs:
+      should_retrain: ${{ steps.drift-check.outputs.should_retrain }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create .env file
+        run: echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
+
+      - name: Load data and run preprocessing
+        run: |
+          python src/data_ingestion.py
+          python src/preprocess.py
+
+      - name: Run drift detection
+        id: drift-check
+        run: |
+          python src/monitor.py
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 1 ]; then
+            echo "should_retrain=true" >> $GITHUB_OUTPUT
+            echo "⚠️ DRIFT DETECTED — retraining will run"
+          else
+            echo "should_retrain=false" >> $GITHUB_OUTPUT
+            echo "✅ No drift detected — model is healthy"
+          fi
+          exit 0
+
+      - name: Upload monitoring report
+        uses: actions/upload-artifact@v3
+        with:
+          name: monitoring-report-${{ github.run_number }}
+          path: reports/monitoring/
+          retention-days: 30
+
+  # ============================================================
+  # JOB 2: Retrain (only if drift detected)
+  # ============================================================
+  retrain:
+    name: Auto Retrain Model
+    runs-on: ubuntu-latest
+    needs: monitor
+    if: |
+      needs.monitor.outputs.should_retrain == 'true' ||
+      github.event.inputs.force_retrain == 'true'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Create .env file
+        run: echo "MONGO_URI=${{ secrets.MONGO_URI }}" > .env
+
+      - name: Run full retrain pipeline
+        run: python src/retrain.py
+
+      - name: Upload retrained model
+        uses: actions/upload-artifact@v3
+        with:
+          name: retrained-model-${{ github.run_number }}
+          path: |
+            models/
+            config/
+            reports/
+
+  # ============================================================
+  # JOB 3: Rebuild Docker image and redeploy to Render
+  # ============================================================
+  redeploy:
+    name: Redeploy to Render with New Model
+    runs-on: ubuntu-latest
+    needs: retrain
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Download retrained model
+        uses: actions/download-artifact@v3
+        with:
+          name: retrained-model-${{ github.run_number }}
+          path: .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push retrained image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/phishing-detection:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/phishing-detection:retrained-${{ github.run_number }}
+
+      - name: Trigger Render redeploy
+        run: |
+          curl -s "${{ secrets.RENDER_DEPLOY_HOOK }}"
+          echo "🚀 Retrained model redeployed to Render!"

@@ -1,0 +1,8 @@
+[
+    {
+        "timestamp": "2026-04-30 10:19:38",
+        "trigger": "drift_detected",
+        "best_model": "Random Forest",
+        "f1_score": 0.9572
+    }
+]

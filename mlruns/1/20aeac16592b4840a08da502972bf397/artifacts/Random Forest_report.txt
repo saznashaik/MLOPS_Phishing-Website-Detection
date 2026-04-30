@@ -1,0 +1,11 @@
+Model: Random Forest
+Trained at: 2026-04-30 10:19:19.237810
+
+              precision    recall  f1-score   support
+
+           0       0.96      0.95      0.96      1143
+           1       0.95      0.96      0.96      1143
+
+    accuracy                           0.96      2286
+   macro avg       0.96      0.96      0.96      2286
+weighted avg       0.96      0.96      0.96      2286
