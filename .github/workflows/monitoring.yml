@@ -43,7 +43,7 @@ jobs:
       - name: Load data and run preprocessing
         run: |
           python src/data_ingestion.py
-          python src/preprocess.py
+          python src/data_preprocess.py
 
       - name: Run drift detection
         id: drift-check

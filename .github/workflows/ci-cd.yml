@@ -39,10 +39,10 @@ jobs:
         run: python src/data_validation.py
 
       - name: Run preprocessing
-        run: python src/preprocess.py
+        run: python src/data_preprocess.py
 
       - name: Train model
-        run: python src/train.py
+        run: python src/data_train.py
 
       - name: Test API starts correctly
         run: |
