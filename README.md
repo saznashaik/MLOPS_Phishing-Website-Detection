@@ -27,11 +27,11 @@
 
 | Endpoint | Link |
 |----------|------|
-| 🏠 API Home | `https://your-app-name.onrender.com/` |
-| 📖 Interactive Docs (Swagger UI) | `https://your-app-name.onrender.com/docs` |
-| ❤️ Health Check | `https://your-app-name.onrender.com/health` |
-| 📊 Model Info | `https://your-app-name.onrender.com/model-info` |
-| 🔮 Predict | `POST https://your-app-name.onrender.com/predict` |
+| 🏠 API Home | `https://phishing-detection-latest.onrender.com` |
+| 📖 Interactive Docs (Swagger UI) | `https://phishing-detection-latest.onrender.com/docs` |
+| ❤️ Health Check | `https://phishing-detection-latest.onrender.com/health` |
+| 📊 Model Info | `https://phishing-detection-latest.onrender.com/model-info` |
+| 🔮 Predict | `https://phishing-detection-latest.onrender.com/predict` |
 
 > **Note:** Hosted on Render free tier. First request after 15 minutes of inactivity takes ~30 seconds to wake up (cold start). This is expected behaviour on the free plan and would not occur on a paid tier.
 
