@@ -60,7 +60,7 @@ jobs:
           exit 0
 
       - name: Upload monitoring report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: monitoring-report-${{ github.run_number }}
           path: reports/monitoring/
@@ -96,7 +96,7 @@ jobs:
         run: python src/retrain.py
 
       - name: Upload retrained model
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: retrained-model-${{ github.run_number }}
           path: |
@@ -117,7 +117,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Download retrained model
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: retrained-model-${{ github.run_number }}
           path: .

@@ -53,7 +53,7 @@ jobs:
 
       # Save trained model so next job can use it
       - name: Upload trained model as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: trained-model
           path: |
@@ -78,7 +78,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Download trained model artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: trained-model
           path: .
